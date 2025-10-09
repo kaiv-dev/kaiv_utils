@@ -1,0 +1,21 @@
+[package]
+name = "kaiv_utils"
+version = "0.0.1"
+authors = ["Kaiv <kaivamorphin@gmail.com>"]
+edition = "2021"
+description = "Utility functions and macros for Rust projects"
+repository = "https://github.com/kaiv-dev/kaiv_utils"
+license = "MIT OR Apache-2.0"
+
+keywords = ["utils", "macros"]
+categories = ["rust-patterns"]
+
+[features]
+default = []
+env_config_macro = ["once_cell", "dotenvy"]
+bevy_support = ["bevy"]
+
+[dependencies]
+once_cell = { version = "*", optional = true }
+dotenvy = { version = "*", optional = true }
+bevy = { version = "*", optional = true, default-features = false }
