@@ -28,7 +28,7 @@ pub trait TryParse<E> {
 impl<E> TryParse<ParseError> for Result<String, E> {
     fn try_parse<T: std::str::FromStr>(self) -> Result<T, ParseError> {
         match self {
-            Ok(v) => v.parse::<T>().ok().ok_or(ParseError::Invalid),
+            Ok(v) => T::from_str(&v).map_err(|_| ParseError::Invalid),
             Err(_) => Err(ParseError::Missing),
         }
     }
@@ -52,7 +52,6 @@ impl<T> Operator<T, ParseError> for (T,) {
         }
     }
 }
-
 
 /// ## That macro reads variables from env or/and file. 
 /// - It creates a struct and put it in global static which can be accessed from anywhere
@@ -108,22 +107,23 @@ macro_rules! env_config {
                     Self {
                         $(
                             $field: 
-                            $crate::helpers::env::Operator::if_none(($($op_val,)?), 
-                            $crate::helpers::env::TryParse::try_parse::<$type>(std::env::var(stringify!($field).to_ascii_uppercase()))
+                            $crate::macros::env_config::Operator::if_none(
+                                ($($op_val,)?), 
+                                $crate::macros::env_config::TryParse::try_parse::<$type>(std::env::var(stringify!($field).to_ascii_uppercase()))
                             ).unwrap_or_else(|e| e.describe_panic(stringify!($field), stringify!($type))),
                         )*
                     }
                 }
             }
 
-            $glob_vis static $glob : $crate::helpers::env::once_cell::sync::Lazy<$struct> = $crate::helpers::env::once_cell::sync::Lazy::new(|| {
-                $crate::helpers::env::dotenvy::from_filename_override($filename).ok();
+            $glob_vis static $glob : $crate::macros::env_config::once_cell::sync::Lazy<$struct> = $crate::macros::env_config::once_cell::sync::Lazy::new(|| {
+                $crate::macros::env_config::dotenvy::from_filename_override($filename).ok();
                 $struct::new()
             });
 
             impl $struct {
                 pub fn fetch() -> &'static Self {
-                    $crate::helpers::env::once_cell::sync::Lazy::force(&$glob)
+                    $crate::macros::env_config::once_cell::sync::Lazy::force(&$glob)
                 }
             }
         )*

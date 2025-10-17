@@ -11,7 +11,7 @@ keywords = ["utils", "macros"]
 categories = ["rust-patterns"]
 
 [features]
-default = []
+default = ["env_config_macro"]
 env_config_macro = ["once_cell", "dotenvy"]
 bevy_support = ["bevy"]
 
