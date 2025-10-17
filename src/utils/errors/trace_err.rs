@@ -25,10 +25,10 @@ use std::fmt::Debug;
 /// // logs with a custom message and returns Err
 /// let _ = res.trace_err_msg("something went wrong");
 ///
-/// // logs the error and panics
+/// // logs the error and panics if res is Err and returns unwrapped T
 /// let _ = res.expect_trace_err();
 ///
-/// // logs with a custom message and panics
+/// // logs with a custom message and panics if res is Err and returns unwrapped T
 /// let _ = res.expect_trace_err_msg("critical failure");
 /// ```
 ///
@@ -42,14 +42,14 @@ use std::fmt::Debug;
 ///     }
 /// }
 /// ```
-pub trait TraceError {
+pub trait TraceError<T> {
     fn trace_err(self) -> Self;
     fn trace_err_msg(self, msg: &str) -> Self;
-    fn expect_trace_err(self) -> Self;
-    fn expect_trace_err_msg(self, msg: &str) -> Self;
+    fn expect_trace_err(self) -> T;
+    fn expect_trace_err_msg(self, msg: &str) -> T;
 }
 
-impl<T, E> TraceError for Result<T, E> where E: Debug {
+impl<T, E> TraceError<T> for Result<T, E> where E: Debug {
     fn trace_err(self) -> Self {
         match self {
             Ok(v) => Ok(v),
@@ -68,18 +68,18 @@ impl<T, E> TraceError for Result<T, E> where E: Debug {
             },
         }
     }
-    fn expect_trace_err(self) -> Self {
+    fn expect_trace_err(self) -> T {
         match self {
-            Ok(v) => Ok(v),
+            Ok(v) => v,
             Err(e) => {
                 tracing::error!("{e:?}");
                 panic!("{e:?}")
             },
         }
     }
-    fn expect_trace_err_msg(self, msg: &str) -> Self {
+    fn expect_trace_err_msg(self, msg: &str) -> T {
         match self {
-            Ok(v) => Ok(v),
+            Ok(v) => v,
             Err(e) => {
                 tracing::error!("{msg}: {e:?}");
                 panic!("{msg}: {e:?}")

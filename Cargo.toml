@@ -11,10 +11,10 @@ keywords = ["utils", "macros"]
 categories = ["rust-patterns"]
 
 [features]
-default = ["env_config_macro", "tracing_support"]
+default = ["env_config_macro", "trace_err"]
 env_config_macro = ["once_cell", "dotenvy"]
 bevy_support = ["bevy"]
-tracing_support = ["tracing"]
+trace_err = ["tracing"]
 
 [dependencies]
 once_cell = { version = "*", optional = true }
