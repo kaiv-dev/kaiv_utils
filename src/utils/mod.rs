@@ -5,6 +5,7 @@ crate::module_import_prelude!(
         }
         use prelude::* from {
             pub mod ops;
+            pub mod errors;
         }
     }
 );
