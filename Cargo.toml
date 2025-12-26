@@ -1,6 +1,6 @@
 [package]
 name = "kaiv_utils"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Kaiv <kaivamorphin@gmail.com>"]
 edition = "2021"
 description = "Utility functions and macros for Rust projects"
@@ -21,3 +21,4 @@ once_cell = { version = "*", optional = true }
 dotenvy = { version = "*", optional = true }
 bevy = { version = "*", optional = true, default-features = false }
 tracing = { version = "*", optional = true }
+paste = "1.0.15"

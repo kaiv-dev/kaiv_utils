@@ -11,6 +11,8 @@
 /// - Supports per-struct visibility and metadata attributes.
 /// - Minimal overhead (single-field tuple struct).
 ///
+/// ⚠️ **Note:** Tuples with vis modifiers are not supported for now.
+/// 
 /// # Syntax
 ///
 /// ```rust
