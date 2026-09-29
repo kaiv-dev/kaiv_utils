@@ -3,8 +3,10 @@
 
 use std::str::FromStr;
 
-pub use dotenvy;
-pub use once_cell;
+#[doc(hidden)]
+pub use dotenvy as __dotenvy;
+#[doc(hidden)]
+pub use once_cell as __once_cell;
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -116,14 +118,14 @@ macro_rules! env_config {
                 }
             }
 
-            $glob_vis static $glob : $crate::macros::env_config::once_cell::sync::Lazy<$struct> = $crate::macros::env_config::once_cell::sync::Lazy::new(|| {
-                $crate::macros::env_config::dotenvy::from_filename_override($filename).ok();
+            $glob_vis static $glob : $crate::macros::env_config::__once_cell::sync::Lazy<$struct> = $crate::macros::env_config::__once_cell::sync::Lazy::new(|| {
+                $crate::macros::env_config::__dotenvy::from_filename_override($filename).ok();
                 $struct::new()
             });
 
             impl $struct {
                 pub fn fetch() -> &'static Self {
-                    $crate::macros::env_config::once_cell::sync::Lazy::force(&$glob)
+                    $crate::macros::env_config::__once_cell::sync::Lazy::force(&$glob)
                 }
             }
         )*
